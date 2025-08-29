@@ -1,14 +1,15 @@
 from models import Vendor, Crop, Sale, MarketRequest
 
-
+# Exit program
 def exit_program():
     print("Kwaheri! (Goodbye!)")
     exit()
 
-
+# Add new vendor
 def add_vendor():
     name = input("Enter vendor name: ")
     
+    # Vendor type menu
     print("Vendor types:")
     print("1. Farmer (small-scale)")
     print("2. Middleman")
@@ -25,10 +26,11 @@ def add_vendor():
     phone_number = input("Enter phone number (optional): ")
     location = input("Enter location (optional): ")
     
+    # Save vendor
     vendor = Vendor.create(name, vendor_type, phone_number, location)
     print(f"Added vendor: {vendor}")
 
-
+# Show all vendors
 def view_vendors():
     vendors = Vendor.get_all()
     if vendors:
@@ -40,10 +42,11 @@ def view_vendors():
     else:
         print("No vendors found.")
 
-
+# Add new crop
 def add_crop():
     name = input("Enter crop name: ")
     
+    # Season menu
     print("Seasons:")
     print("1. Planting")
     print("2. Growing") 
@@ -60,6 +63,7 @@ def add_crop():
     
     season = seasons.get(season_choice, "available")
     
+    # Market section menu
     print("Market sections:")
     print("1. Vegetables")
     print("2. Grains")
@@ -76,10 +80,11 @@ def add_crop():
     
     market_section = sections.get(section_choice, "vegetables")
     
+    # Save crop
     crop = Crop.create(name, season, market_section)
     print(f"Added crop: {crop}")
 
-
+# Show all crops
 def view_crops():
     crops = Crop.get_all()
     if crops:
@@ -91,7 +96,7 @@ def view_crops():
     else:
         print("No crops found.")
 
-
+# Find vendor by ID
 def find_vendor():
     vendor_id = input("Enter vendor ID: ")
     try:
@@ -106,7 +111,7 @@ def find_vendor():
     except ValueError:
         print("Please enter a valid number.")
 
-
+# Find crop by ID
 def find_crop():
     crop_id = input("Enter crop ID: ")
     try:
@@ -120,7 +125,7 @@ def find_crop():
     except ValueError:
         print("Please enter a valid number.")
 
-
+# Remove vendor
 def remove_vendor():
     vendor_id = input("Enter vendor ID to remove: ")
     try:
@@ -137,33 +142,33 @@ def remove_vendor():
     except ValueError:
         print("Please enter a valid number.")
 
-
+# Create sale transaction
 def create_sale():
     print("Create a new sale:")
     
-    # Get vendor
+    # Vendor
     vendor_id = input("Enter vendor ID: ")
     try:
         vendor = Vendor.find_by_id(int(vendor_id))
         if not vendor:
-            print("❌ Vendor not found.")
+            print(" Vendor not found.")
             return
     except ValueError:
         print("Please enter a valid number.")
         return
     
-    # Get crop
+    # Crop
     crop_id = input("Enter crop ID: ")
     try:
         crop = Crop.find_by_id(int(crop_id))
         if not crop:
-            print("❌ Crop not found.")
+            print(" Crop not found.")
             return
     except ValueError:
         print("Please enter a valid number.")
         return
     
-    # Get sale details
+    # Price and quantity
     try:
         price_per_kg = float(input("Enter price per kg (KSH): "))
         quantity_kg = float(input("Enter quantity (kg): "))
@@ -173,11 +178,12 @@ def create_sale():
     
     market_day = input("Enter market day (optional): ")
     
+    # Save sale
     sale = Sale.create(vendor, crop, price_per_kg, quantity_kg, market_day)
     total_value = price_per_kg * quantity_kg
-    print(f"✅ Sale created! Total value: KSH {total_value:.2f}")
+    print(f"Sale created! Total value: KSH {total_value:.2f}")
 
-
+# Show all sales
 def view_sales():
     sales = Sale.get_all()
     if sales:
@@ -193,18 +199,18 @@ def view_sales():
     else:
         print("No sales found.")
 
-
+# Market analytics
 def market_analytics():
     print("\n" + "="*80)
     print("KENYAN MARKET ANALYTICS")
     print("="*80)
     
-    # Get all data
+    # Data
     vendors = Vendor.get_all()
     crops = Crop.get_all()
     sales = Sale.get_all()
     
-    # Vendor analytics
+    # Vendors by type
     vendor_types = {}
     for vendor in vendors:
         vendor_types[vendor.vendor_type] = vendor_types.get(vendor.vendor_type, 0) + 1
@@ -214,7 +220,7 @@ def market_analytics():
     for vendor_type, count in vendor_types.items():
         print(f"  {vendor_type}: {count} vendors")
     
-    # Crop analytics by season
+    # Crops by season
     season_crops = {}
     for crop in crops:
         season_crops[crop.season] = season_crops.get(crop.season, 0) + 1
@@ -224,7 +230,7 @@ def market_analytics():
     for season, count in season_crops.items():
         print(f"  {season}: {count} crops")
     
-    # Sales analytics
+    # Sales summary
     if sales:
         total_sales = len(sales)
         total_value = sum(sale.price_per_kg * sale.quantity_kg for sale in sales)
@@ -238,13 +244,13 @@ def market_analytics():
     
     print("\n" + "="*80)
 
-
+# Show everything (tables)
 def view_all_data():
     print("\n" + "="*80)
     print("KENYAN MARKET DATABASE OVERVIEW")
     print("="*80)
     
-    # Vendors table
+    # Vendors
     vendors = Vendor.get_all()
     print(f"\nVENDORS ({len(vendors)} records):")
     print("-" * 60)
@@ -256,7 +262,7 @@ def view_all_data():
     else:
         print("No vendors found")
     
-    # Crops table
+    # Crops
     crops = Crop.get_all()
     print(f"\nCROPS ({len(crops)} records):")
     print("-" * 50)
@@ -268,7 +274,7 @@ def view_all_data():
     else:
         print("No crops found")
     
-    # Sales table
+    # Sales
     sales = Sale.get_all()
     print(f"\nSALES ({len(sales)} records):")
     print("-" * 70)
@@ -282,7 +288,7 @@ def view_all_data():
     else:
         print("No sales found")
     
-    # Market requests table
+    # Market requests
     requests = MarketRequest.get_all()
     print(f"\nMARKET REQUESTS ({len(requests)} active):")
     print("-" * 80)
@@ -297,11 +303,11 @@ def view_all_data():
     
     print("\n" + "="*80)
 
-
+# Create market buying request
 def create_market_request():
     print("\n=== CREATE BUYING REQUEST ===")
     
-    # Show available vendors
+    # Vendors
     vendors = Vendor.get_all()
     if not vendors:
         print("No vendors available. Please add vendors first.")
@@ -343,6 +349,7 @@ def create_market_request():
     
     contact_info = input("Enter contact info (phone/location): ")
     
+    # Save request
     request = MarketRequest.create(
         vendor_id=vendor.id,
         vendor_name=vendor.name,
@@ -352,14 +359,14 @@ def create_market_request():
         contact_info=contact_info
     )
     
-    print(f"\n✅ Market request created successfully!")
+    print(f"\n Market request created successfully!")
     print(f"   Buyer: {vendor.name}")
     print(f"   Wanting: {crop_name}")
     print(f"   Quantity: {quantity_kg} kg")
     print(f"   Max Price: KSH {max_price_per_kg}/kg")
     print(f"   Contact: {contact_info}")
 
-
+# Show market requests
 def view_market_requests():
     requests = MarketRequest.get_all()
     if requests:
@@ -372,12 +379,12 @@ def view_market_requests():
             contact = req.contact_info if req.contact_info else "N/A"
             print(f"{req.id:<5} {req.vendor_name:<20} {req.crop_name:<15} {req.quantity_kg:<10.1f} {req.max_price_per_kg:<12.2f} {date_str:<15} {contact:<15}")
         
-        print(f"\n💰 Total active requests: {len(requests)}")
-        print("💡 Farmers can check this list to find buyers for their produce!")
+        print(f"\n Total active requests: {len(requests)}")
+        print(" Farmers can check this list to find buyers for their produce!")
     else:
         print("No active market requests found.")
 
-
+# Remove market request
 def remove_market_request():
     requests = MarketRequest.get_all()
     if not requests:

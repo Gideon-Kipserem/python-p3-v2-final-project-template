@@ -18,12 +18,13 @@ from helpers import (
     remove_market_request
 )
 
-
+# Main entry point
 def main():
-    print("Karibu! Welcome to the Kenyan Market Management System! 🇰🇪")
+    print("Karibu! Welcome to the Kenyan Market Management System!")
     print("Manage vendors, crops, and track sales in your fresh produce market.")
     print()
 
+    # Loop for user menu
     while True:
         menu()
         choice = input("> ")
@@ -61,10 +62,10 @@ def main():
         else:
             print("Invalid choice")
 
-
+# Menu text
 def menu():
     print("\n" + "="*80)
-    print("🇰🇪 KENYAN MARKET MANAGEMENT SYSTEM 🇰🇪")
+    print("KENYAN MARKET MANAGEMENT SYSTEM")
     print("="*80)
     print("1.  Add a vendor")
     print("2.  View all vendors")
@@ -83,6 +84,6 @@ def menu():
     print("0.  Exit the program")
     print("="*80)
 
-
+# Run program
 if __name__ == "__main__":
     main()

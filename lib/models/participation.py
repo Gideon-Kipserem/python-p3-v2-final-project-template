@@ -3,21 +3,24 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from . import Base, session
 
-
+# Sale table
 class Sale(Base):
     __tablename__ = "sales"
     
-    id = Column(Integer, primary_key=True)
-    vendor_id = Column(Integer, ForeignKey("vendors.id"), nullable=False)
-    crop_id = Column(Integer, ForeignKey("crops.id"), nullable=False)
-    price_per_kg = Column(Float)
-    quantity_kg = Column(Float)
-    market_day = Column(String)  # Monday, Tuesday, etc.
-    transaction_date = Column(DateTime, default=datetime.now)  # Exact date and time
+    # Columns
+    id = Column(Integer, primary_key=True)                 # primary key
+    vendor_id = Column(Integer, ForeignKey("vendors.id"), nullable=False)  # vendor link
+    crop_id = Column(Integer, ForeignKey("crops.id"), nullable=False)      # crop link
+    price_per_kg = Column(Float)                           # price per kg
+    quantity_kg = Column(Float)                            # quantity in kg
+    market_day = Column(String)                            # e.g. Monday
+    transaction_date = Column(DateTime, default=datetime.now)  # date and time
     
+    # Relationships
     vendor = relationship("Vendor", back_populates="sales")
     crop = relationship("Crop", back_populates="sales")
     
+    # Print format
     def __repr__(self):
         vendor_name = self.vendor.name if self.vendor else "Unknown"
         crop_name = self.crop.name if self.crop else "Unknown"
@@ -25,6 +28,7 @@ class Sale(Base):
         date_str = self.transaction_date.strftime("%Y-%m-%d %H:%M") if self.transaction_date else "Unknown"
         return f"<Sale(vendor='{vendor_name}', crop='{crop_name}', total=KSH {total:.2f}, date={date_str})>"
     
+    # Create new sale
     @classmethod
     def create(cls, vendor, crop, price_per_kg, quantity_kg, market_day=""):
         sale = cls(vendor=vendor, crop=crop, price_per_kg=price_per_kg, 
@@ -33,16 +37,17 @@ class Sale(Base):
         session.commit()
         return sale
     
+    # Get all sales (latest first)
     @classmethod
     def get_all(cls):
         return session.query(cls).order_by(cls.transaction_date.desc()).all()
     
+    # Find sale by id
     @classmethod
     def find_by_id(cls, id):
         return session.query(cls).filter_by(id=id).first()
     
+    # Delete a sale
     def delete(self):
         session.delete(self)
         session.commit()
-
-
